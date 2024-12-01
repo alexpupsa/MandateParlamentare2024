@@ -4,9 +4,10 @@ namespace MandateParlamentare2024.Services
 {
     public class DataMapper
     {
-        public static VoturiJudet MapJsonDataToVoturiJudet(Root root)
+        public static VoturiJudet MapJsonDataToVoturiJudet(Root root, TipVot tipVot)
         {
-            var items = root.Scopes["PRCNCT"].Categories["PRSD"].Table.Values.ToList();
+            var votKey = tipVot == TipVot.Senat ? "S" : "CD";
+            var items = root.Scopes["PRCNCT"].Categories[votKey].Table.Values.ToList();
             var countyVotes = new VoturiJudet
             {
                 Voturi = new List<VoturiCandidat>()

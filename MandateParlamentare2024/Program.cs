@@ -16,22 +16,29 @@ namespace MandateParlamentare2024
                 "ph", "sj", "sm", "sb", "sv", "tr", "tm", "tl", "vs", "vl",
                 "vn", "s1", "s2", "s3", "s4", "s5", "s6", "sr"
             };
-            var countiesVotes = new List<VoturiJudet>();
+            var countiesVotesCD = new List<VoturiJudet>();
+            var countiesVotesS = new List<VoturiJudet>();
 
             foreach (var county in counties)
             {
                 var json = await DataService.GetJsonFromAEP(county);
-                var data = DataService.ParseCountyJson(json);
-                if (data != null)
+                if (json != null)
                 {
-                    var voturiJudet = DataMapper.MapJsonDataToVoturiJudet(data);
-                    countiesVotes.Add(voturiJudet);
+                    var data = DataService.ParseCountyJson(json);
+                    if (data != null)
+                    {
+                        var voturiJudetCD = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.CameraDeputatilor);
+                        var voturiJudetS = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.Senat);
+
+                        countiesVotesCD.Add(voturiJudetCD);
+                        countiesVotesS.Add(voturiJudetS);
+                    }
                 }
             }
 
-            if (countiesVotes.Count > 0)
+            if (countiesVotesCD.Count > 0 || countiesVotesS.Count > 0)
             {
-                var results = await ResultsService.GetResults(countiesVotes, countiesVotes);
+                var results = await ResultsService.GetResults(countiesVotesCD, countiesVotesS);
 
                 var jsonResults = JsonConvert.SerializeObject(results, Formatting.Indented);
 
