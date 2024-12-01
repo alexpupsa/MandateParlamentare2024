@@ -36,8 +36,8 @@ namespace MandateParlamentare2024
                             judet = "b";
                         }
 
-                        var voturiJudetCD = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.CameraDeputatilor);
-                        var voturiJudetS = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.Senat);
+                        var voturiJudetCD = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.CameraDeputatilor, county);
+                        var voturiJudetS = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.Senat, county);
 
                         ProcessCountyVotes(voturiJudetCD, judet, ref countiesVotesCD);
                         ProcessCountyVotes(voturiJudetS, judet, ref countiesVotesS);
@@ -64,7 +64,6 @@ namespace MandateParlamentare2024
         {
             if (countyVotes != null)
             {
-                countyVotes.Judet = county;
                 if (county == "b")
                 {
                     var judetB = allCountiesVotes.FirstOrDefault(x => x.Judet == "b");
