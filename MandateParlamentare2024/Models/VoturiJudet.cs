@@ -9,5 +9,11 @@
         public double RepartitorJudet { get; set; }
         public int SectiiNumarate { get; set; }
         public int VoturiExprimate { get; set; }
+
+        public VoturiJudet(string judet)
+        {
+            Judet = judet;
+            Voturi = new List<VoturiCandidat>();
+        }
     }
 }

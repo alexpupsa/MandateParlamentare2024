@@ -1,4 +1,6 @@
-﻿namespace MandateParlamentare2024.Models
+﻿using Newtonsoft.Json;
+
+namespace MandateParlamentare2024.Models
 {
     public class Field
     {
@@ -9,6 +11,7 @@
     public class Candidate
     {
         public string Id { get; set; }
+        [JsonProperty("candidate")]
         public string CandidateName { get; set; }
         public string Party { get; set; }
         public string Votes { get; set; }

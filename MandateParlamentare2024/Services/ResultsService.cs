@@ -4,10 +4,10 @@ namespace MandateParlamentare2024.Services
 {
     public class ResultsService
     {
-        public static async Task<RezultatNational> GetResults(List<VoturiJudet> voturiDeputati, List<VoturiJudet> voturiSenatori)
+        public static RezultatNational GetResults(List<VoturiJudet> voturiDeputati, List<VoturiJudet> voturiSenatori)
         {
-            var rezultatDeputati = GetResultsByTipVot(TipVot.CameraDeputatilor, voturiDeputati, false);
-            var rezultatSenatori = GetResultsByTipVot(TipVot.Senat, voturiSenatori, false);
+            var rezultatDeputati = GetResultsByTipVot(TipVot.CameraDeputatilor, voturiDeputati);
+            var rezultatSenatori = GetResultsByTipVot(TipVot.Senat, voturiSenatori);
 
             var judete = rezultatDeputati.Select(x => x.Judet).Distinct().OrderBy(x => x);
 
@@ -61,9 +61,9 @@ namespace MandateParlamentare2024.Services
             };
         }
 
-        private static List<VoturiJudet> GetResultsByTipVot(TipVot tipVot, List<VoturiJudet> voturiJudete, bool isLongJudet)
+        private static List<VoturiJudet> GetResultsByTipVot(TipVot tipVot, List<VoturiJudet> voturiJudete)
         {
-            var mandateJudete = GetNumarMandate(isLongJudet);
+            var mandateJudete = GetNumarMandate();
             var candidati = voturiJudete.SelectMany(x => x.Voturi).Select(x => x.Candidat).Distinct();
             var voturiCandidatiNational = new List<VoturiCandidat>();
             foreach (var candidat in candidati)
@@ -105,7 +105,7 @@ namespace MandateParlamentare2024.Services
                 var candidatiJudet = candidatiPestePrag.Concat(voturiJudet.Voturi.Where(x => x.Tip == TipCandidat.Independent).Select(x => x.Candidat));
 
                 var totalVoturiPragJudet = voturiJudet.Voturi.Where(x => candidatiJudet.Contains(x.Candidat)).Sum(x => x.Voturi);
-                var totalLocuriJudet = tipVot == TipVot.CameraDeputatilor ? mandateJudete.First(x => x.Judet == voturiJudet.Judet).Deputati : mandateJudete.First(x => x.Judet == voturiJudet.Judet).Senatori;
+                var totalLocuriJudet = tipVot == TipVot.CameraDeputatilor ? mandateJudete.First(x => x.Judet == voturiJudet.Judet.ToUpper()).Deputati : mandateJudete.First(x => x.Judet == voturiJudet.Judet.ToUpper()).Senatori;
                 var coeficientElectoral = Convert.ToInt32(Math.Floor((double)totalVoturiPragJudet / (double)totalLocuriJudet));
 
                 foreach (var candidat in candidatiJudet)
@@ -272,21 +272,21 @@ namespace MandateParlamentare2024.Services
             return voturiJudete;
         }
 
-        private static List<MandateJudet> GetNumarMandate(bool isLongJudet)
+        private static List<MandateJudet> GetNumarMandate()
         {
             return new List<MandateJudet>
             {
-                new MandateJudet { Judet = "AB", Senatori = 2, Deputati = 5 },
+                new MandateJudet { Judet = "AB", Senatori = 3, Deputati = 5 },
                 new MandateJudet { Judet = "AR", Senatori = 3, Deputati = 7 },
                 new MandateJudet { Judet = "AG", Senatori = 4, Deputati = 9 },
                 new MandateJudet { Judet = "BC", Senatori = 4, Deputati = 10 },
                 new MandateJudet { Judet = "BH", Senatori = 4, Deputati = 9 },
                 new MandateJudet { Judet = "BN", Senatori = 2, Deputati = 5 },
                 new MandateJudet { Judet = "BT", Senatori = 3, Deputati = 6 },
-                new MandateJudet { Judet = "BV", Senatori = 4, Deputati = 9 },
+                new MandateJudet { Judet = "BV", Senatori = 4, Deputati = 10 },
                 new MandateJudet { Judet = "BR", Senatori = 2, Deputati = 5 },
                 new MandateJudet { Judet = "BZ", Senatori = 3, Deputati = 7 },
-                new MandateJudet { Judet = "CS", Senatori = 2, Deputati = 5 },
+                new MandateJudet { Judet = "CS", Senatori = 3, Deputati = 5 },
                 new MandateJudet { Judet = "CL", Senatori = 2, Deputati = 4 },
                 new MandateJudet { Judet = "CJ", Senatori = 4, Deputati = 10 },
                 new MandateJudet { Judet = "CT", Senatori = 5, Deputati = 11 },
@@ -306,19 +306,19 @@ namespace MandateParlamentare2024.Services
                 new MandateJudet { Judet = "MS", Senatori = 4, Deputati = 8 },
                 new MandateJudet { Judet = "NT", Senatori = 3, Deputati = 8 },
                 new MandateJudet { Judet = "OT", Senatori = 3, Deputati = 6 },
-                new MandateJudet { Judet = "PH", Senatori = 5, Deputati = 11 },
+                new MandateJudet { Judet = "PH", Senatori = 5, Deputati = 12 },
                 new MandateJudet { Judet = "SM", Senatori = 2, Deputati = 5 },
                 new MandateJudet { Judet = "SJ", Senatori = 2, Deputati = 4 },
                 new MandateJudet { Judet = "SB", Senatori = 3, Deputati = 6 },
-                new MandateJudet { Judet = "SV", Senatori = 4, Deputati = 10 },
+                new MandateJudet { Judet = "SV", Senatori = 4, Deputati = 11 },
                 new MandateJudet { Judet = "TR", Senatori = 2, Deputati = 5 },
                 new MandateJudet { Judet = "TM", Senatori = 4, Deputati = 10 },
                 new MandateJudet { Judet = "TL", Senatori = 2, Deputati = 4 },
                 new MandateJudet { Judet = "VS", Senatori = 3, Deputati = 7 },
                 new MandateJudet { Judet = "VL", Senatori = 2, Deputati = 6 },
                 new MandateJudet { Judet = "VN", Senatori = 2, Deputati = 5 },
-                new MandateJudet { Judet = "B", Senatori = 13, Deputati = 29 },
-                new MandateJudet { Judet = "DI", Senatori = 2, Deputati = 4 }
+                new MandateJudet { Judet = "B", Senatori = 14, Deputati = 30 },
+                new MandateJudet { Judet = "SR", Senatori = 3, Deputati = 4 }
             };
         }
     }

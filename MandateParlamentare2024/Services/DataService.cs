@@ -20,7 +20,6 @@ namespace MandateParlamentare2024.Services
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
-
             }
 
             return null;
