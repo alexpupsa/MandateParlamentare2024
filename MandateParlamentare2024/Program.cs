@@ -24,6 +24,7 @@ namespace MandateParlamentare2024
 
             foreach (var county in counties)
             {
+                Console.WriteLine($"Process county {county}");
                 var json = await DataService.GetJsonFromAEP(county);
                 if (json != null)
                 {
@@ -57,6 +58,37 @@ namespace MandateParlamentare2024
                 var jsonResults = JsonConvert.SerializeObject(results, Formatting.Indented);
 
                 File.WriteAllText(@"C:\USR\rezultate-parlamentare.json", jsonResults);
+
+                Console.WriteLine("Done");
+                Console.WriteLine();
+
+                var timis = results.RezultateJudete.FirstOrDefault(x => x.Judet == "tm");
+                if (timis != null)
+                {
+                    Console.WriteLine("Timis Deputati:");
+                    Console.WriteLine();
+                    foreach (var rezultat in timis.RezultatePartide)
+                    {
+                        Console.WriteLine(rezultat.Partid);
+                        Console.WriteLine($"Deputati total: {rezultat.MandateDeputatFaza1 + rezultat.MandateDeputatFaza2 + rezultat.MandateDeputatFaza2b}");
+                        Console.WriteLine($"Deputati faza 1: {rezultat.MandateDeputatFaza1}");
+                        Console.WriteLine($"Deputati faza 2: {rezultat.MandateDeputatFaza2}");
+                        Console.WriteLine($"Deputati faza 2b: {rezultat.MandateDeputatFaza2b}");
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("Timis Senatori:");
+                    Console.WriteLine();
+                    foreach (var rezultat in timis.RezultatePartide)
+                    {
+                        Console.WriteLine(rezultat.Partid);
+                        Console.WriteLine($"Senatori total: {rezultat.MandateSenatorFaza1 + rezultat.MandateSenatorFaza2 + rezultat.MandateSenatorFaza2b}");
+                        Console.WriteLine($"Senatori faza 1: {rezultat.MandateSenatorFaza1}");
+                        Console.WriteLine($"Senatori faza 2: {rezultat.MandateSenatorFaza2}");
+                        Console.WriteLine($"Senatori faza 2b: {rezultat.MandateSenatorFaza2b}");
+                        Console.WriteLine();
+                    }
+                }
             }
         }
 
