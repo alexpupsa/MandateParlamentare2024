@@ -37,8 +37,8 @@ namespace MandateParlamentare2024
                             judet = "b";
                         }
 
-                        var voturiJudetCD = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.CameraDeputatilor, county);
-                        var voturiJudetS = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.Senat, county);
+                        var voturiJudetCD = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.CameraDeputatilor, judet);
+                        var voturiJudetS = DataMapper.MapJsonDataToVoturiJudet(data, TipVot.Senat, judet);
 
                         ProcessCountyVotes(voturiJudetCD, judet, ref countiesVotesCD);
                         ProcessCountyVotes(voturiJudetS, judet, ref countiesVotesS);
