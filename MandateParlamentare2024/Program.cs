@@ -58,37 +58,10 @@ namespace MandateParlamentare2024
                 var jsonResults = JsonConvert.SerializeObject(results, Formatting.Indented);
 
                 File.WriteAllText(@"C:\USR\rezultate-parlamentare.json", jsonResults);
-
                 Console.WriteLine("Done");
-                Console.WriteLine();
 
-                var timis = results.RezultateJudete.FirstOrDefault(x => x.Judet == "tm");
-                if (timis != null)
-                {
-                    Console.WriteLine("Timis Deputati:");
-                    Console.WriteLine();
-                    foreach (var rezultat in timis.RezultatePartide)
-                    {
-                        Console.WriteLine(rezultat.Partid);
-                        Console.WriteLine($"Deputati total: {rezultat.MandateDeputatFaza1 + rezultat.MandateDeputatFaza2 + rezultat.MandateDeputatFaza2b}");
-                        Console.WriteLine($"Deputati faza 1: {rezultat.MandateDeputatFaza1}");
-                        Console.WriteLine($"Deputati faza 2: {rezultat.MandateDeputatFaza2}");
-                        Console.WriteLine($"Deputati faza 2b: {rezultat.MandateDeputatFaza2b}");
-                        Console.WriteLine();
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Timis Senatori:");
-                    Console.WriteLine();
-                    foreach (var rezultat in timis.RezultatePartide)
-                    {
-                        Console.WriteLine(rezultat.Partid);
-                        Console.WriteLine($"Senatori total: {rezultat.MandateSenatorFaza1 + rezultat.MandateSenatorFaza2 + rezultat.MandateSenatorFaza2b}");
-                        Console.WriteLine($"Senatori faza 1: {rezultat.MandateSenatorFaza1}");
-                        Console.WriteLine($"Senatori faza 2: {rezultat.MandateSenatorFaza2}");
-                        Console.WriteLine($"Senatori faza 2b: {rezultat.MandateSenatorFaza2b}");
-                        Console.WriteLine();
-                    }
-                }
+                PrintDateJudet(results, "tm");
+                PrintDatePartideGuvernare(results);
             }
         }
 
@@ -112,6 +85,62 @@ namespace MandateParlamentare2024
                 {
                     allCountiesVotes.Add(countyVotes);
                 }
+            }
+        }
+
+        private static void PrintDateJudet(RezultatNational results, string county)
+        {
+            Console.WriteLine();
+
+            var date = results.RezultateJudete.FirstOrDefault(x => x.Judet == county);
+            if (date != null)
+            {
+                Console.WriteLine($"{county} Deputati:");
+                Console.WriteLine();
+                foreach (var rezultat in date.RezultatePartide)
+                {
+                    Console.WriteLine(rezultat.Partid);
+                    Console.WriteLine($"Deputati total: {rezultat.MandateDeputatFaza1 + rezultat.MandateDeputatFaza2 + rezultat.MandateDeputatFaza2b}");
+                    Console.WriteLine($"Deputati faza 1: {rezultat.MandateDeputatFaza1}");
+                    Console.WriteLine($"Deputati faza 2: {rezultat.MandateDeputatFaza2}");
+                    Console.WriteLine($"Deputati faza 2b: {rezultat.MandateDeputatFaza2b}");
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+                Console.WriteLine($"{county} Senatori:");
+                Console.WriteLine();
+                foreach (var rezultat in date.RezultatePartide)
+                {
+                    Console.WriteLine(rezultat.Partid);
+                    Console.WriteLine($"Senatori total: {rezultat.MandateSenatorFaza1 + rezultat.MandateSenatorFaza2 + rezultat.MandateSenatorFaza2b}");
+                    Console.WriteLine($"Senatori faza 1: {rezultat.MandateSenatorFaza1}");
+                    Console.WriteLine($"Senatori faza 2: {rezultat.MandateSenatorFaza2}");
+                    Console.WriteLine($"Senatori faza 2b: {rezultat.MandateSenatorFaza2b}");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        private static void PrintDatePartideGuvernare(RezultatNational results)
+        {
+            var rezultatePartide = results.RezultateJudete.SelectMany(x => x.RezultatePartide).ToList();
+
+            var partide = rezultatePartide.Select(x => x.Partid).Distinct().ToList();
+
+            Console.WriteLine();
+            Console.WriteLine("Camera Deputatilor:");
+            foreach (var partid in partide)
+            {
+                var numarDeputati = rezultatePartide.Where(x => x.Partid == partid).Sum(x => x.MandateDeputatFaza1 + x.MandateDeputatFaza2 + x.MandateDeputatFaza2b);
+                Console.WriteLine($"{partid} {numarDeputati}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Senat:");
+            foreach (var partid in partide)
+            {
+                var numarSenatori = rezultatePartide.Where(x => x.Partid == partid).Sum(x => x.MandateSenatorFaza1 + x.MandateSenatorFaza2 + x.MandateSenatorFaza2b);
+                Console.WriteLine($"{partid} {numarSenatori}");
             }
         }
     }
